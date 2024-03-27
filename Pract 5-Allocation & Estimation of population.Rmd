@@ -1,0 +1,97 @@
+---
+title: "Allocation & Estimation of population Parameters in stratified sampling"
+author: "Harhal Marathe"
+date: "2023-09-21"
+output:
+  html_document:
+    df_print: paged
+---
+##Question 1
+$$\hat{p}_{st}=\sum_{h=1}^L W_h\hat{p}_h \quad\quad\quad V(\hat{p}_{st})=\sum_{h=1}^L \frac{W_h^2 \hat{p}_h \hat{q}_h}{n_h}$$
+
+```{r}
+Nh=c(50000,35000,25000)
+nh=c(2000,1500,1500)
+xh=c(1050,790,450)
+ph=xh/nh
+Wh=Nh/sum(Nh)
+
+phat=sum(Wh*ph)
+SE_phat=sqrt(sum(Wh^2*ph*(1-ph)/(nh)))
+cat("Phat=",phat," SE(Phat)=",SE_phat)
+```
+
+##Question 2
+var(Ybar)?
+
+
+$$S^2_y=\frac{\sum_h N_hS^2_h}{\sum(N_h)}$$
+$$V(\bar{Y}_{st})=\sum(\frac{1}{n_h}-\frac{1}{N_h})s_h^2w_h^2$$
+
+NeyMann's Allocation in case of fixed cost (C)
+
+$$n_h=n\frac{W_hs_h/\sqrt{c_h}}{\sum W_hs_h\sqrt{c_h}}$$
+```{r}
+Nh=c(18260,4315,2233,1057,567)
+ybar_h=c(100,250,500,1760,2250)
+sd_h=c(80,200,600,1900,2500)
+c_h=c(6,9,10,12,15)
+n=600
+
+Sy2=sum(Nh*sd_h^2)/sum(Nh)
+VYbar_srs=(1/n-1/sum(Nh))*Sy2
+cat("\nEstimated average output from sample of 600 factories by SRS:",VYbar_srs)
+
+# Proportional Allocation
+Wh=Nh/sum(Nh)
+nh=round(Wh*n)
+
+VYbar_st=sum((1/nh-1/Nh)*sd_h^2*Wh^2)
+cat("\nEstimated average output from sample of 600 factories by Proportional Allocation:",VYbar_st)
+
+nh2=n*(Wh*sd_h/sqrt(c_h))/sum(Wh*sd_h*sqrt(c_h))
+VYbar_st3=(sum(Wh*sd_h))^2/n-sum(Wh*sd_h^2)/sum(Nh)
+cat("\nEstimated average output from sample of 600 factories by Neymann's Allocation:",VYbar_st3)
+
+C=6000;C0=1500;
+
+n4=round((C-C0)*sum((Wh*sd_h/sqrt(c_h))/sum(Wh*sd_h*sqrt(c_h))))
+nh4=round(n4*(Wh*sd_h/sqrt(c_h))/sum(Wh*sd_h*sqrt(c_h)))
+
+VYbar_ney=(sum(Wh*sd_h*sqrt(c_h)))^2/(C-C0)-sum(Wh*sd_h^2)/sum(Nh)
+cat("\nEstimated average output from sample of 444 factories by Neymann's Allocation for fixed survey Cost:",VYbar_ney) 
+
+nh5=round(Wh*n4)
+VYbar_st2=sum((1/nh5-1/Nh)*sd_h^2*Wh^2)
+cat("\nEstimated average output from sample of 444 factories by Proportional Allocation:",VYbar_st2)
+```
+
+##Question3
+$$n_h=\frac{n W_hs_h}{\sum W_hs_h}$$
+
+```{r}
+Nh6=c(12,24,19,13,9)
+nh=c(4,6,5,4,2)
+Wh=Nh6/sum(Nh6)
+s1=c(3.5,2.7,1.1,1.9)
+s2=c(2.4,6.9,3.7,2.8,3.4,2.6)
+s3=c(1,1.3,2.9,1.6,3.4)
+s4=c(1,0,2.3,0.5)
+s5=c(5.8,4.9)
+Yval=c(s1,s2,s3,s4,s5)
+stratum=rep(1:5,nh)
+ybarh=tapply(Yval,stratum,mean)
+sh=tapply(Yval,stratum,sd)
+Ybar_st=sum(Wh*ybarh)
+VYbar_st4=sum((1/nh-1/Nh6)*Wh^2*sh^2)
+cat("Ybar:",Ybar_st,"Vbar_st:",VYbar_st4)
+n=21
+nh2=round(n*Wh)
+VYbar_prop=sum((1/nh2-1/Nh6)*Wh^2*sh^2)
+cat("\nVbar_prop:",VYbar_prop)
+
+nh3=round((n*Wh*sh)/sum(Wh*sh))
+VYbar_opti=(sum(Wh*sh))^2/n-sum(Wh*sh^2)/sum(Nh6)
+cat("\nVbar_opti:",VYbar_opti)
+```
+

@@ -1,0 +1,122 @@
+---
+title: "Estimation of population parameter in SRS"
+author: "Harshal Marathe"
+output: word_document
+date: "2023-08-09"
+---
+
+
+# Estimation of population parameters in SRS
+
+1. The following data gives the geographical area (in acres) under paddy for 58 villages. Draw sample of eight villages by using SRSWOR. Based on sample drawn find the estimate of 'average area per village under paddy' and estimate of its variance and 95\% confidence interval for 'average area per village under paddy'.
+
+98, 19, 47, 137, 155, 270, 64, 69, 127, 292, 79, 81, 144, 104, 240, 273, 141, 56, 117, 201, 130, 58, 102, 170, 261, 158, 29, 102, 210, 189, 116, 46, 187, 101, 194, 93, 161, 222, 41, 127, 179, 223, 33, 114, 76, 96, 78, 88, 137, 114, 56, 108, 179, 318, 58, 58, 76, 272
+
+$$\overline{X}\pm z_{\alpha/2}\times\sqrt{1/n-1/N}$$
+
+
+```{r}
+pop <- c(98, 19, 47, 137, 155, 270, 64, 69, 127, 292, 79, 81, 144, 104, 240, 273, 141, 56, 117, 201, 130, 58, 102, 170, 261, 158, 29, 102, 210, 189, 116, 46, 187, 101, 194, 93, 161, 222, 41, 127, 179, 223, 33, 114, 76, 96, 78, 88, 137, 114, 56, 108, 179, 318, 58, 58, 76, 272)
+N <- length(pop)
+n <- 8
+alpha <- 0.05
+x1 <- sample(pop,n,replace = F)
+x1
+xbar <- mean(x1)
+xbar
+s2x <-var(x1)*((n-1)/n)
+s2x
+sam_var <- ((1/n)-(1/N))*s2x
+sam_var
+z_alphaby2 <- qnorm(1-(alpha/2))
+Lower <- xbar - z_alphaby2*sqrt((sam_var)*(1/n-1/N))
+Upper <- xbar + z_alphaby2*sqrt((sam_var)*(1/n-1/N))
+cat("Confidence Interval for pop mean=(",c(Lower,Upper),")")
+cat("\n Population mean",mean(pop),"estimated mean",xbar)
+```
+
+2. The following are the monthly expenditures of 25 households selected
+randomly by using
+SRSWOR from a village having N = 400 households.
+
+1698, 1889, 1910, 1768, 1852, 1837, 1811, 1762, 1722, 1851, 1717, 1715, 1791, 1908, 1801, 1800, 1893, 1771, 1709, 1772, 1667, 1690, 1811, 1816, 1731.
+
+Obtain an unbiased estimate of monthly average expenditure per household in the village. Also, provide an estimate of 98\% C.I. for the monthly
+average expenditure per household.
+
+```{r}
+x2 <- c(1698, 1889, 1910, 1768, 1852, 1837, 1811, 1762, 1722, 1851, 1717, 1715, 1791, 1908, 1801, 1800, 1893, 1771, 1709, 1772, 1667, 1690, 1811, 1816, 1731)
+N2 <- 400
+n2 <- length(x2)
+alpha <- 0.02
+x2bar <- mean(x2)
+x2bar
+s2x2 <-var(x2)*((n2-1)/n2)
+s2x2
+sam_var <- ((1/n2)-(1/N2))*s2x2
+sam_var
+z2_alphaby2 <- qnorm(1-(alpha/2))
+Lower2 <- x2bar - z2_alphaby2*sqrt((s2x2)*(1/n2-1/N2))
+Upper2 <- x2bar + z2_alphaby2*sqrt((s2x2)*(1/n2-1/N2))
+cat("Confidence Interval for pop mean=(",c(Lower2,Upper2),")")
+cat("Estimated mean=",x2bar)
+sprintf("Confidence Interval for pop mean=(%1.3f,%1.3f)",Lower2,Upper2)
+```
+
+3. A SRS of 30 households was drawn from a city area containing 14,848 households. The number of persons per household in sample was as follows
+5, 6, 3, 3, 2, 3, 3, 3, 4, 4, 3, 2, 7, 4, 3, 5, 4, 4, 3, 3, 4, 3, 3, 1, 2, 4, 3, 4, 2, 4
+
+Estimate the total number of people in the area and compute the probability that this estimate is within $\pm$ 10 \% of the true value.
+$$P(|X-\mu|\geq k\sigma)\leq \frac{1}{k^2}$$
+
+
+$$N\overline{X}\sim Normal(N\mu,\frac{N^2\sigma^2}{n})$$
+
+$$P(|N\overline{X}-N\mu|\geq k\frac{N\sigma}{\sqrt{n}})\leq\frac{1}{k^2} $$
+
+$$P(|N\overline{X}-N\mu|\leq k\frac{N\sigma}{\sqrt{n}})\geq 1-\frac{1}{k^2} $$
+
+$$k\frac{N\sigma}{\sqrt{n}}=10\% N\mu\rightarrow k=\frac{10\%\mu\sqrt{n}}{\sigma}$$
+
+
+$$1-\frac{1}{k^2}=\frac{\sigma^2}{0.01\mu^2n}$$
+
+```{r}
+N3 <- 14848
+x3 <- c(5, 6, 3, 3, 2, 3, 3, 3, 4, 4, 3, 2, 7, 4, 3, 5, 4, 4, 3, 3, 4, 3, 3, 1, 2, 4, 3, 4, 2, 4)
+n3 <- length(x3)
+x3bar <- mean(x3)
+x3bar
+sd(x3)
+est_total_households <-(N3*x3bar)
+sprintf("Estimated total no of households=(%1.3f)",est_total_households)
+s3 <- var(x3)*(n3/(n3-1))
+k <- 1-(((100)*(s3))/(x3bar^2*n3))
+k
+
+
+
+```
+
+4. The following table shows the weekly family income
+$(X)$ and weekly family expenditure on food $(Y)$ in SRS of 30 low-income families. From this sample estimate the mean weekly expenditure on food per family and the percentage of income spent on food.
+
+ Family No., 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 
+ Income (X), 620, 620, 870, 650, 580, 920, 880, 790, 830, 620, 630, 620, 600, 750, 900 
+ Food Cost (Y), 143, 208, 227, 305, 412, 282, 242, 300, 242, 444, 134, 198, 294, 271, 222
+ Family, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 
+ Income (X), 750, 690, 830, 850, 730, 660, 580, 770, 690, 650, 770, 690, 950, 770, 690 
+ Food Cost (Y), 377, 226, 360, 206, 277, 259, 233, 398, 168, 378, 348, 287, 630, 195, 216 
+
+
+```{r}
+income <- c(620, 620, 870, 650, 580, 920, 880, 790, 830, 620, 630, 620, 600, 750, 900,750, 690, 830, 850, 730, 660, 580, 770, 690, 650, 770, 690, 950, 770, 690 )
+food <-c(143, 208, 227, 305, 412, 282, 242, 300, 242, 444, 134, 198, 294, 271, 222,377, 226, 360, 206, 277, 259, 233, 398, 168, 378, 348, 287, 630, 195, 216 )
+
+w_avg_food <- mean(food)
+sprintf("Average weekly expenditure on food per family:  %1.3f",w_avg_food)
+total_expenditure <- sum(income)
+total_exp_food <- sum(food)
+percentage <- (total_exp_food/total_expenditure)*100
+percentage
+```

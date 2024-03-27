@@ -1,0 +1,71 @@
+
+!"
+author: "Harshal Marathe"
+date: "2023-10-17"
+output:
+  html_document:
+    df_print: paged
+---
+```{r}
+#Q1
+mills <- 1:20
+x <- c(368,384,361,347,403,529703,396,479,509,512,503,472,429,387,376,412,345,297,633)
+y <- c(31,33,37,39,43,61,68,42,41,49,31,29,38,41,40,38,42,45,32,50)
+n<- 5
+N <- 20
+sample1 <- sample(mills,5,replace=F)
+sample1
+Y=y[sample1]
+cat('estimated sample mean is:',mean(Y))
+X=x[sample1]
+xt=sum(x)
+
+#simple random sampling method
+Yt_srs <- N*mean(Y)
+EVYT_srs <- N^2*(1/n-1/N)*var(Y)
+cat('\nPopulation total is :',Yt_srs)
+R=mean(Y)/mean(X)
+cat('\nThe Ratio estimator is:',R)
+
+#Ratio method
+YT_ratio <- R*xt
+EVYt_ratio <- N^2*(1/n-1/N)*(var(Y)+R^2*var(X)-2*R*cov(X,Y))
+
+cat('\npop_t_srs:',Yt_srs,'\t MSE of Pop_total_srs',EVYT_srs,'\n Pop_total_Ratio',YT_ratio,'\t MSE of Pop_total_Ratio',EVYt_ratio)
+```
+```{r}
+#Q2
+x1=c(1707,1373,1630,1373,1376,1452,1160,1511,1628,1492)
+y1=c(2116,1685,2130,1775,1795,1972,1650,1888,1947,2007)
+n=10
+N=100
+x_bar=1572
+x1t=x_bar*100
+R1=mean(y1)/mean(x1)
+YT_ratio <- R1*x1t
+EVYt_ratio <-  N^2*(1/n-1/N)*(var(y1)+R1^2*var(x1)-2*R1*cov(x1,y1))
+cat('popu_total is :',YT_ratio,'\nSE is :',EVYt_ratio)
+```
+```{r}
+x2=c(76,138,67,29,381,23,37,120,61,387,93,172,78,66,60,46,2,507,179,121,50,44,77,64,64,56,40,40,38,136)
+y2=c(80,143,67,50,464,48,69,115,69,459,104,183,106,86,57,65,50,634,260,113,64,58,89,63,77,142,60,64,52,139)
+x2t=sum(x2)
+
+N=30;n=12;samples=200;
+df=data.frame("Yt_srs"=rep(0,samples),"Yt_ratio"=rep(0,samples))
+
+for(i in 1:samples)
+{
+  n_i=sample(1:N,n,replace = F)
+  Y=y2[n_i]
+  X=x2[n_i]
+#simple random sampling method
+  df$Yt_srs[i]=N*mean(Y)
+  R=mean(Y)/mean(X)
+#ratio method
+  df$Yt_ratio[i]=R*x2t
+}
+df
+hist(df$Yt_srs,col="red")
+hist(df$Yt_ratio,col="yellow",add=T)
+```

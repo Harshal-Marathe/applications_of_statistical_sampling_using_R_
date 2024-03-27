@@ -1,0 +1,34 @@
+---
+title: "national income"
+author: "Harshal Marathe"
+date: "2023-11-08"
+output: html_document
+---
+```{r}
+y <- c(1000,750,4500,8000,900,9050,11000,1500,550,2900,7500,25000,2200,1200,3900,4500,27000,1100,500,10000,12000,900,750,2100,1050)
+U <- 1:25
+Y <- sort(y)
+py <- (cumsum(Y)/sum(Y))*100
+cp <- (U/25)*100
+plot(cp,py,type="l",col="RED",xlab="% of households",ylab="% of income",main = "Lorenz Curve")
+lines(cp,cp,col="GREEN")
+n=25
+G <- (1/(n-1))*(n+1-2*(sum((n+1-U)*Y)/(sum(Y))));G
+#data.frame(U,py,cp)
+#as 40p of population have only 6p of total income then there is high inequality  
+```
+```{r}
+#Q2
+U1=1:15000;n1=15000
+y1=c(rnorm(5000,3000,100),rnorm(10000,4500,200))
+Y1 <- sort(y1)
+py <- (cumsum(Y)/sum(Y1))*100
+cp <- (U1/n1)*100
+plot(cp,py,type="l",col="RED",xlab="% of households",ylab="% of income",main = "Lorenz Curve")
+lines(cp,cp,col="GREEN")
+n=25
+G1 <- (1/(n1-1))*(n1+1-2*(sum((n1+1-U1)*Y1)/(sum(Y1))));G1
+cat('\n as the value of G is close to 0 ')
+```
+
+

@@ -1,0 +1,66 @@
+---
+title: "Estimation of population parameters by Ratio and regression method"
+author: "Harshal Marathe"
+date: "2023-10-18"
+output:
+  html_document:
+    df_print: paged
+
+```{r}
+#Q1
+X=c(1054,973,1089,1054,894)
+Y=c(10316,7025,10512,8963,8783)
+N=12
+n=5
+x_bar=988.75
+R=mean(Y)/mean(X)
+
+#srs
+Ybar_srs=mean(Y);
+EVYbar_srs=(1/n-1/N)*var(Y);
+
+#ratio method
+Ybar_ratio <- R*x_bar
+EVYbar_Ratio <- (1/n-1/N)*(var(Y)+R^2*var(X)-2*R*cov(X,Y));
+
+#regression method
+bhat=cov(X,Y)/var(X)
+Ybar_Reg <- mean(Y)+bhat*(x_bar-mean(X))
+EVYbar_Reg <- (1/n-1/N)*(var(Y)+bhat^2*var(X)-2*bhat*cov(X,Y));
+
+df=data.frame("method"=c("SRS","Ratio","Regression"),"Xbar"=c(Ybar_srs,Ybar_ratio,Ybar_Reg),"MSE"=c(EVYbar_srs,EVYbar_Ratio,EVYbar_Reg))
+df
+
+cat("Estimate efficiency of regression method over ratio method :",EVYbar_Reg/EVYbar_Ratio)
+```
+
+```{r}
+#Q2
+X=c(59,47,52,60,67,48,44,58,76,58)
+Y=c(61,42,50,58,67,45,39,57,71,53)
+N=200
+n=10
+xt=11600
+xbar=xt/N
+R=mean(Y)/mean(X)
+
+#srs
+Ybar_srs=mean(Y);
+EVYbar_srs=(1/n-1/N)*var(Y);
+
+#ratio method
+Ybar_ratio <- R*xbar
+EVYbar_Ratio <- (1/n-1/N)*(var(Y)+R^2*var(X)-2*R*cov(X,Y));
+
+#regression method
+bhat=cov(X,Y)/var(X)
+Ybar_Reg <- mean(Y)+bhat*(xbar-mean(X))
+EVYbar_Reg <- (1/n-1/N)*(var(Y)+bhat^2*var(X)-2*bhat*cov(X,Y));
+
+df=data.frame("method"=c("SRS","Ratio","Regression"),"Xbar"=c(Ybar_srs,Ybar_ratio,Ybar_Reg),"MSE"=c(EVYbar_srs,EVYbar_Ratio,EVYbar_Reg))
+df
+
+cat("Estimate efficiency of regression method over ratio method :",EVYbar_Reg/EVYbar_Ratio)
+```
+
+

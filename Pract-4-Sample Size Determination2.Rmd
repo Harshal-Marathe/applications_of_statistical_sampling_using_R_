@@ -1,0 +1,112 @@
+---
+title: "Sample Size Determination"
+author: "Harshal Balkrushna Marathe"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document: default
+---
+
+# Determination of Sample size and Estimation of population proportion.
+
+1. How large sample should be taken from a population of 2000 units so that sample estimate of population mean ($\bar{y}$) differs from its true value by a quantity less than 20 with probability 0.95? It is given that an estimate of population variance is 10,000.
+
+(i.e. we have $N$=2000, $d =20$, $1-\alpha =0.95$, $S_{Y}^{2} =10,000$)
+
+```{r}
+N1=2000
+d1=20
+alpha1=0.05
+S_Y21=10000
+z_alpha1=qnorm(1-alpha1/2)
+n1=1/((1/N1)+(d1^2)/(S_Y21*z_alpha1^2))
+sprintf("The required sample size is %1.0f",n1)
+
+```
+
+2. Suppose it is required to estimate the average value (population mean) of output of a group of 5000 factories in a region so that the sample estimate lies within 10\% of the true value with confidence coefficient of 95\%. Determine the minimum sample size required. The population coefficient of variation is known to be 60\%.
+(we have $N$=5000,$\varepsilon =0.1\times\bar{y}$,$1-\alpha =0.95$, $CV=60\%$)
+
+
+```{r}
+N2=5000
+d2=0.01
+alpha2=0.05
+z_alpha2=qnorm(1-alpha2/2)
+S_Y22=0.36
+n2=1/((1/N2)+((d2)/(S_Y22*z_alpha2^2)))
+sprintf("The required sample size is %1.0f",n2)
+```
+
+3. Select a random sample of size 200 from Bernoulli({$p=0.67$}). Treat it as the result of the ${10}^{th}$ class here '1' indicates student is passed and '0' indicates student is failed. Now, based on this sample, estimate the population proportion.
+
+
+```{r}
+n3=200
+p3=0.67
+x3=rbinom(200,1,0.67)
+p_hat=sum(x3)/n3
+sprintf("The proportion is %1.2f",p_hat)
+```
+
+4. The proportion of families having 2 or more children $p$ in a certain city is to be estimated. There are {N}= 10,000 families, a random sample of $n = 200$ families is selected, and we find that $\hat{p}$= 0.55. Calculate 90\% confidence interval for $p$.
+
+
+```{r}
+N4=10000
+n4=200
+p_hat4=0.55
+alpha4=0.1
+v_hat_p=(p_hat4*(1-p_hat4))/(n4-1)
+z_alpha4=qnorm(1-alpha4/2)
+LL=p_hat4-z_alpha4*sqrt(v_hat_p)
+UL=p_hat4+z_alpha4*sqrt(v_hat_p)
+cat("the 90% C.I for population proportion is :",LL,UL)
+```
+
+5.A preliminary random sample of {n }=50 students is selected from {N }=4000 students and it is found that 30 smoke. How large a sample must be selected so that the sample estimate lies within 5\% of the true value with confidence coefficient of 90\%.
+
+```{r}
+n5=50
+N5=4000
+p5=30/n5
+d5=0.05*p5
+alpha5=0.1
+z_alpha5=qnorm(1-alpha5/2)
+
+n_5=1/((1/N5)+((N5-1)/N5)*(d5^2/(p5*(1-p5)*z_alpha5^2)))
+n=(p5*(1-p5)*z_alpha5^2)/d5^2
+sprintf("The required sample size is %1.0f",n_5)
+sprintf("The required sample size is %1.0f",n)
+```
+
+6. A major metropolitan newspaper selected a simple random sample of 1,600 readers from their list of 100,000 subscribers. They asked whether the paper should increase its coverage of local news. Forty percent of the sample wanted more local news. Estimate the 99\% confidence interval for the proportion of readers who would like more coverage of local news?
+
+
+
+```{r}
+n6=1600
+N6=100000
+p_hat6=0.4
+alpha6=0.01
+z_alpha6=qnorm(1-alpha6/2)
+v_hat_p6=(p_hat6*(1-p_hat6))/(n6-1)
+LL6=p_hat6-z_alpha6*sqrt(v_hat_p6)
+UL6=p_hat6+z_alpha6*sqrt(v_hat_p6)
+cat("the 90% C.I for population proportion is :",LL6,UL6)
+```
+
+7. In nurseries that produce young trees for sale it is advisable to estimate how many healthy young trees are likely to be on hand, since this determines policy toward the acceptance of orders. By the complete enumeration of the bed of silver maple seedlings it was found that$\overline{y}=19,s^2 =85.6$ and $N=430$. With SRSWOR, how many units must be taken to estimate $\overline{y}$ within 10\% apart from the chance of 1 of 20?
+
+
+
+```{r}
+y_bar=19
+s_2=85.6
+N7=430
+alpha7=0.05
+z_alpha7=qnorm(1-alpha7/2)
+d7=0.1*y_bar
+n7=1/((1/N7)+(d7^2)/(s_2*z_alpha7^2))
+sprintf("The required sample size is %1.0f",n7)
+```

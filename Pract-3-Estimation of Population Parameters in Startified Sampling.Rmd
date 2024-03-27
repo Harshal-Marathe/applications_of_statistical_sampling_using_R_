@@ -1,0 +1,132 @@
+---
+title: "Stratified Random Sampling & Estimation of population parameters"
+author: "Harashal Marathe"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+# Example 1
+
+Consider a population with ${N=250}$ and four strata with sizes $(N_{1},N_{2},N_{3},N_{4})=(50,30,100,70)$. Draw stratified random sample of size of ${n=25}$ with respective sample sizes for four strata as $(n_{1},n_{2},n_{3},n_{4})=(5,3,12,5)$
+
+
+```{r}
+N=c(50,30,100,70)
+cN=c(0,cumsum(N))
+n=c(5,3,12,5)
+
+s1=sample((cN[1]+1):cN[2],n[1])
+s2=sample((cN[2]+1):cN[3],n[2])
+s3=sample((cN[3]+1):cN[4],n[3])
+s4=sample((cN[4]+1):cN[5],n[4])
+data.frame(Stratum=rep(1:4,n),sample=c(s1,s2,s3,s4))
+```
+
+
+# Example 2
+
+From a population with ${N=5000}$ and ${3}$ strata with sizes$N_{1} =1000,N_{2}=1500,N_{3} =2500$. In the following table sample y-values are given
+
+| Stratum | $N_{h}$ | $n_{h}$ | Sample y-values                                      |
+|---------|---------|---------|------------------------------------------------------|
+| 1       | 1000    | 10      | 5, 4, 1, 2, 4, 3, 7, 5, 0, 3                          |
+| 2       | 1500    | 15      | 11, 9, 13, 9, 4, 5, 5, 14, 8, 9, 11, 7, 10, 14, 7   |
+| 3       | 2500    | 20      | 22, 16, 18, 18, 23, 20, 20, 19, 20, 16, 21, 20, 26, 20, 26, 18, 21, 17, 22, 21 |
+
+
+Estimate (i) population mean (ii) S.E. of your estimate of population mean by using this sample.\\
+
+```{r}
+Nh=c(1000,1500,2500);Wh=Nh/sum(Nh)
+nh=c(10,15,20)
+Y1=c(5, 4, 1, 2, 4, 3, 7, 5, 0, 3)
+Y2=c(11, 9, 13, 9, 4, 5, 5, 14, 8, 9, 11, 7, 10, 14, 7)
+Y3=c(22, 16, 18, 18, 23, 20, 20, 19, 20, 16, 21, 20, 26, 20, 26, 18, 21, 17, 22, 21)
+
+Yval=c(Y1,Y2,Y3)
+Stratum=rep(1:3,nh)
+Ybarh=tapply(Yval,Stratum,mean)
+S2h=tapply(Yval,Stratum,var)
+Ybar_st=sum(Wh*Ybarh)
+EstVYbar_st=sum((Wh^2)*S2h*((1/nh)-(1/Nh)))
+EstSE=sqrt(EstVYbar_st)
+sprintf('Estimation of population mean :%1.4f ',Ybar_st)
+sprintf('S.E. of your estimate of population mean: %1.4f',EstSE)
+```
+
+# Example 3
+
+The table shows the sizes of 64 cities (in 1000's) in 1920 in United States of America. The cities are arranged in two strata,the first containing the 16 cities and second contains remaining 48 cities. Find the standard error of the `estimated total size' by drawing the sample of 20 cities from 64 (16+48) cities using simple random sampling drawing the sample using stratified random sampling with stratum sizes $(n_{1} =5,n_{2} =15)$.
+
+| Stratum 1 | 799, 773, 778, 734, 588, 577, 507, 507, 457, 438, 415, 401, 387, 381, 324, 315 |
+|-----------|---------------------------------------------------------------------------------|
+| Stratum 2 | 314, 298, 296, 258, 256, 243, 238, 237, 235, 235, 216, 208, 201, 192, 180, 179, 172, 172, 163, 162, 161, 159, 153, 144, 138, 138, 138, 138, 136, 132, 130, 126, 121, 120, 119, 118, 118, 116, 116, 113, 113, 110, 110, 108, 106, 104, 101, 100 |
+
+Program:
+```{r}
+nh=c(5,15)
+s1=c(799, 773, 778, 734, 588, 577, 507, 507, 457, 438, 415, 401, 387, 381, 324, 315)
+s2=c(314, 298, 296, 258, 256, 243, 238, 237, 235, 235, 216, 208, 201, 192, 180, 179, 172, 172, 163, 162, 161, 159, 153, 144, 138, 138, 138, 138, 136, 132, 130, 126, 121, 120, 119, 118, 118, 116, 116, 113, 113, 110, 110, 108, 106, 104, 101, 100)
+
+
+pop=c(s1,s2);
+Nh=c(16,48);nh=c(5,15);Wh=Nh/sum(Nh);
+N=64;n=20;
+#Simple Random Sampling
+sample.srs=sample(pop,n)
+Ybar.srs=mean(sample.srs)
+SEYbar.srs=sqrt((1/n-1/N)*var(sample.srs))
+Yt.srs=N*Ybar.srs
+SEYt.srs=N*SEYbar.srs
+cat("Estimate of Y_Total is :",Yt.srs,"While S.E is: ",SEYt.srs)
+
+#stratified 
+sample.strat=c(sample(s1,nh[1]),sample(s2,nh[2]))
+no.strat=rep(1:2,nh)
+Ybarh=tapply(sample.strat,no.strat,mean)
+S2h=tapply(sample.strat,no.strat,var)
+Ybar.st=sum(Wh*Ybarh)
+EstVYbar.st=sum((Wh^2)*S2h*((1/nh)-(1/Nh)))
+EstSE=sqrt(EstVYbar.st)
+cat("\nStratified Method: Estimate of Y_Total",N*Ybar.st,"While SE is",N*EstSE)
+
+```
+
+# Example 4
+
+A primary school has four classes class I,II,III and IV with number of students 40,35,35 and 30 respectively. A stratified random sample with allocation vector $\left(n_{1},n_{2},n_{3},n_{4} \right)$ $\left(8,5,7,5\right)$was drawn and the weights of students selected in sample are noted as below.
+
+| Class | Weights of students selected (in kg)                    | Class | Weights of students selected (in kg)             |
+|-------|---------------------------------------------------------|-------|--------------------------------------------------|
+| I     | 15.5, 14.5, 17.5, 20.5, 21.5, 20, 16, 22                | III   | 24.5, 29.5, 27.5, 24.5, 28, 23, 28.5            |
+| II    | 23.5, 20.5, 24.5, 26.5, 26                              | IV    | 25.5, 30.5, 31.5, 28.5, 33                      |
+
+
+a. Obtain the estimate of mean weight of students in the school.
+b. Obtain 95\% C.I. for mean weight of students in the school.\\
+
+```{r}
+Nh=c(40,35,35,30)
+nh=c(8,5,7,5)
+Wh=Nh/sum(Nh)
+s1=c(15.5, 14.5, 17.5, 20.5, 21.5, 20, 16, 22)
+s2=c(23.5, 20.5, 24.5, 26.5, 26)
+s3=c(24.5, 29.5, 27.5, 24.5, 28, 23, 28.5)
+s4=c( 25.5, 30.5, 31.5, 28.5, 33)
+
+Yval=c(s1,s2,s3,s4)
+Stratum=rep(1:4,nh)
+Ybarh=tapply(Yval,Stratum,mean)
+S2h=tapply(Yval,Stratum,var)
+Ybar_st=sum(Wh*Ybarh)
+EstVYbar_st=sum((Wh^2)*S2h*((1/nh)-(1/Nh)))
+EstSE=sqrt(EstVYbar_st)
+sprintf('Estimation of population mean :%1.4f ',Ybar_st)
+sprintf('S.E. pf your estimate of population mean: %1.4f',EstSE)
+alpha=0.05
+zalphaby2=qnorm(1-alpha/2)
+cat('\nCI of pop mean weight(',Ybar_st-zalphaby2*EstSE,Ybar_st+zalphaby2*EstSE,')')
+```

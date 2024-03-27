@@ -1,0 +1,93 @@
+---
+title: "pract-8 PPS design"
+author: "Harshal Marathe"
+date: "2023-11-02"
+output: word_document
+---
+```{r}
+N=10
+U=1:10
+x=c(3,1,11,6,4,8,3,7,4,3)
+n=3
+p=x/sum(x)
+#with replacement
+S1=sample(U,n,replace=T,prob=p)
+S1
+
+#Without replacement
+S2=rep(0,n)
+x1=x
+for (i in 1:3)
+  {
+S2[i]=sample(U,1,prob=x1/sum(x1))
+x1[S2[i]]=0
+}
+S2
+```
+
+```{r}
+#Q2
+N=14
+U1=1:14
+x2=c(9,7,5,6,3,7,3,5,2,7,4,6,4,9)
+n=4
+S3=c(2,8,12,8)
+Yr=c(29,13,20,13)
+P=x2/sum(x2)
+Pr=P[S3]
+Zr=Yr/N*Pr
+Z_bar=mean(Zr)
+Z_bar
+S.E_Zbar=sqrt(var(Zr))
+S.E_Zbar
+
+
+```
+```{r}
+#Q3
+U=1:20
+N=20
+x=c(15,16,9,11,8,9,5,12,11,13,7,9,11,9,11,12,8,12,8,7)
+y=c(61,67,38,46,33,39,22,50,46,52,29,39,47,38,45,48,34,50,34,30)
+n=4
+S4=rep(0,n)
+S4[1]=sample(U,1,prob=x/sum(x))
+U1=U[U!=S4[1]]
+S4[2:n]=sample(U1,n-1,replace=F)
+S4
+P=x/sum(x)
+Z=y/N*P
+T=rep(0,N)
+T[S4]=1
+Pi=(n-1/(N-1))+((N-n)/(N-1))*P
+
+
+pij=diag(rep(0,N))
+for(i in 1:N)
+{
+  for (j in 1:N)
+  {
+    if(i!=j){
+      pij[i,j]=((n-1)/(N-1))*(((N-n)/(N-2))*(P[i]+P[j]))+(n-2)/(N-2)
+    } 
+  }
+}
+
+Ti=rep(0,N)
+Ti[S4]=1
+ybar_HT=(1/N)*sum((y*Ti)/P)
+ybar_HT
+
+v_HT=0
+vbar_HT <- for(i in 1:N){
+   for(j in 1:N){
+     if(i!=j){
+       v_HT=v_HT+(1/2*n^2)*(Ti[i]*Ti[j]*((Pi[i]*Pi[j]-pij[i,j])*(Z[i]-Z[j])^2)/pij[i,j])
+     }
+   }
+}
+v_HT
+
+```
+
+
